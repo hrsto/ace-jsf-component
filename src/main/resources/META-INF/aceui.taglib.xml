@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<facelet-taglib xmlns="http://xmlns.jcp.org/xml/ns/javaee">
+    <namespace>https://www.webarity.com/custom-comps/aceui</namespace>
+    <tag>
+        <tag-name>AceUI</tag-name>
+        <component>
+            <component-type>AceUI</component-type>
+            <renderer-type>AceUIRenderer</renderer-type>
+        </component>
+    </tag>
+</facelet-taglib>
