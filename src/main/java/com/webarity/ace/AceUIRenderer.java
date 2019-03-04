@@ -33,53 +33,52 @@ public class AceUIRenderer extends Renderer {
     public void encodeEnd(FacesContext ctx, UIComponent comp) throws IOException {
         if (ctx == null || comp == null) throw new NullPointerException();
         AceUI c = (AceUI)comp;
-        
-        try (
-            ResponseWriter resp = ctx.getResponseWriter();
-            ) {
-                resp.startElement("div", c);
-                resp.writeAttribute("id", "ace-ed", null);
-                resp.endElement("div");
-                
-                resp.startElement("input", c);
-                resp.writeAttribute("name", c.getClientId(), "name");
-                resp.writeAttribute("id", c.getClientId(), "id");
-                resp.writeAttribute("hidden", true, "clientId");
 
-                c.getClientBehaviors().entrySet().stream()
-                    .filter(entry -> c.getEventNames().contains(entry.getKey()))
-                    .forEach(entry -> {
-                        
-                        ClientBehaviorContext cbCtx = ClientBehaviorContext.createClientBehaviorContext(ctx, c, entry.getKey(), c.getClientId(), null);
-                        entry.getValue().stream().forEach(cb -> {
-                            try {
-                                    resp.writeAttribute(String.format("on%s", entry.getKey()), cb.getScript(cbCtx), null);
-                            } catch (IOException ex) {
-                                ex.printStackTrace();
-                            }
-                        });
-                    });
-                if (c.getValue() != null) {
-                    resp.writeAttribute("value", j.toJson(c.getValue()), "value");
-                }
-                resp.endElement("input");
-                
-                renderScriptInitializer(resp, c);
-            } catch (IOException ex) {
-                throw ex;
-            }
+        String editorId = String.format("ace-ed_%s", c.getClientId());
+
+        ResponseWriter resp = ctx.getResponseWriter();
+        resp.startElement("div", c);
+        resp.writeAttribute("id", editorId, "clientId");
+        resp.endElement("div");
+        
+        resp.startElement("input", c);
+        resp.writeAttribute("name", c.getClientId(), "name");
+        resp.writeAttribute("id", c.getClientId(), "id");
+        resp.writeAttribute("hidden", true, "clientId");
+
+        c.getClientBehaviors().entrySet().stream()
+            .filter(entry -> c.getEventNames().contains(entry.getKey()))
+            .forEach(entry -> {
+                ClientBehaviorContext cbCtx = ClientBehaviorContext.createClientBehaviorContext(ctx, c, entry.getKey(), c.getClientId(), null);
+                entry.getValue().stream().forEach(cb -> {
+                    try {
+                            resp.writeAttribute(String.format("on%s", entry.getKey()), cb.getScript(cbCtx), null);
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                });
+            });
+        if (c.getValue() != null) {
+            resp.writeAttribute("value", j.toJson(c.getValue()), "value");
         }
+        resp.endElement("input");
+        
+        renderScriptInitializer(resp, c, editorId);
+    }
 
     @Override
     public Object getConvertedValue(FacesContext context, UIComponent component, Object submittedValue) throws ConverterException {
+        String subVal = (String) submittedValue;
+        if (submittedValue == null || subVal.isEmpty()) {
+            return null;
+        }
         return j.fromJson((String)submittedValue, AceModel.class);
-
-        // return super.getConvertedValue(context, component, submittedValue);
     }
 
     @Override
     public void decode(FacesContext ctx, UIComponent comp) {
         AceUI c = (AceUI)comp;
+        c.getClientBehaviors().forEach((event, behavior) -> behavior.forEach(b -> b.decode(ctx, c)));
         c.setSubmittedValue(ctx.getExternalContext().getRequestParameterMap().get(c.getClientId()));
     }
     
@@ -90,7 +89,7 @@ public class AceUIRenderer extends Renderer {
      * @param c The Ace custom component
      * @throws IOException
      */
-    private void renderScriptInitializer(ResponseWriter resp, AceUI c) throws IOException {
+    private void renderScriptInitializer(ResponseWriter resp, AceUI c, String editorId) throws IOException {
         resp.startElement("script", c);
         
         resp.write(String.format("ace.config.setModuleUrl('ace/theme/%s', '/javax.faces.resource/theme-%s.js.xhtml?ln=ace');",  c.getTheme(), c.getTheme()));
@@ -98,16 +97,17 @@ public class AceUIRenderer extends Renderer {
         resp.write(String.format("ace.config.setModuleUrl('ace/mode/%s', '/javax.faces.resource/mode-%s.js.xhtml?ln=ace');",  c.getMode(), c.getMode()));
         resp.write(String.format("ace.config.setModuleUrl('ace/mode/%s_worker', '/javax.faces.resource/worker-%s.js.xhtml?ln=ace');",  c.getMode(), c.getMode()));
 
-        resp.write(String.format("var editor = ace.edit('%s', {maxLines:%d, minLines:%d, wrap:%b, autoScrollEditorIntoView:%b, mode: 'ace/mode/%s'});", "ace-ed", c.getMaxLines(), c.getMinLines(), true, true, c.getMode()));
-        
-        resp.write(String.format("editor.setTheme('ace/theme/%s');", c.getTheme()));
-        resp.write(String.format("editor.setKeyboardHandler('ace/keybindings/%s');", c.getKeybinding()));
+        StringBuilder ops = new StringBuilder();
+        ops.append("{");
+        ops.append(String.format("maxLines: %d,", c.getMaxLines()));
+        ops.append(String.format("minLines: %d,", c.getMinLines()));
+        ops.append(String.format("wrap: %b,", true));
+        ops.append(String.format("autoScrollEditorIntoView: %b,", true));
+        ops.append(String.format("mode: 'ace/mode/%s',", c.getMode()));
+        ops.append("}");
 
-        resp.write(String.format("WebarityAceEditor.updater('%s');", c.getClientId()));
+        resp.write(String.format("new WebarityAceJS('%s', '%s', 'ace/theme/%s', 'ace/keybindings/%s', %b, %s)", editorId, c.getClientId(), c.getTheme(), c.getKeybinding(), c.getValue() != null, ops));
 
-        if (c.getValue() != null) {
-            resp.write(String.format("WebarityAceEditor.jsonToSession(editor, document.getElementById('%s').value)", c.getClientId()));
-        }
         resp.endElement("script");
     }
 }
