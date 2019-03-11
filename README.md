@@ -39,7 +39,7 @@ If using ajax, component will automatically synch with the backing bean 1.5 seco
 
 Component comes with a custom type `com.webarity.ace.model.AceModel`. The backing bean in the example above - `#{someBean.code}`, the `code` field is of type `AceModel`. This is a deserialized view of the Ace Session. The actual code is reachable via `code.content` as a `java.lang.String`. There are no getters/setters for brevity; all fields are public and are directly accessed as of this initial version of the component.
 
-**NOTE:** the field of your backing bean must be of type `AceModel`.
+**NOTE:** the field of your backing bean can be String. It will receive a JSON value of `AceModel`. Look below for Serialization/deserialization - which can be integrated with your own converter.
 
 ### Serialization:
 Provided are JSON serializer/deserializer:

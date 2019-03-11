@@ -14,7 +14,6 @@ import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
 import javax.json.bind.JsonbConfig;
 
-import com.webarity.ace.model.AceModel;
 import com.webarity.ace.model.json.AceModelDeserializer;
 import com.webarity.ace.model.json.AceModelSerializer;
 
@@ -68,11 +67,9 @@ public class AceUIRenderer extends Renderer {
 
     @Override
     public Object getConvertedValue(FacesContext context, UIComponent component, Object submittedValue) throws ConverterException {
-        String subVal = (String) submittedValue;
-        if (submittedValue == null || subVal.isEmpty()) {
-            return null;
-        }
-        return j.fromJson((String)submittedValue, AceModel.class);
+        AceUI c = (AceUI)component;
+        if (c.getConverter() == null) return super.getConvertedValue(context, component, submittedValue);
+        return c.getConverter().getAsObject(context, c, (String)submittedValue);
     }
 
     @Override
