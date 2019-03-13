@@ -7,11 +7,11 @@ function WebarityAceJS(editorId, inputElementId, theme, kbdHandler, initSession,
     this.editor.setTheme(theme);
     this.editor.setKeyboardHandler(kbdHandler);
 
-    this.updater();
-
     if (initSession) {
         this.jsonToSession();
     }
+
+    this.updater();
 }
 
 WebarityAceJS.prototype = {

@@ -58,7 +58,7 @@ public class AceUIRenderer extends Renderer {
                 });
             });
         if (c.getValue() != null) {
-            resp.writeAttribute("value", j.toJson(c.getValue()), "value");
+            resp.writeAttribute("value", c.getValue(), "value");
         }
         resp.endElement("input");
         
