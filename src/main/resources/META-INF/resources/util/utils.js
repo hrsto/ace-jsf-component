@@ -25,7 +25,7 @@ WebarityAceJS.prototype = {
         this.editor.getSession().on('changeBackMarker', () => this.proc(this.inputElementId, 2500));
         this.editor.getSession().on('changeFrontMarker', () => this.proc(this.inputElementId, 2500));
         this.editor.getSession().on('changeWrapMode', () => this.proc(this.inputElementId, 2500));
-        this.editor.getSession().on('changeWrapLimit', () => this.proc(this.inputElementId, 2500));
+        // this.editor.getSession().on('changeWrapLimit', () => this.proc(this.inputElementId, 2500)); //FIXME: this triggers a change event if component gets hidden/show via display:none/block
     },
 
     jsonToSession: function() {
