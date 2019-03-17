@@ -1,6 +1,7 @@
 package com.webarity.ace;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import javax.faces.application.ResourceDependencies;
 import javax.faces.application.ResourceDependency;
@@ -96,8 +97,8 @@ public class AceUIRenderer extends Renderer {
 
         StringBuilder ops = new StringBuilder();
         ops.append("{");
-        ops.append(String.format("maxLines: %d,", c.getMaxLines()));
-        ops.append(String.format("minLines: %d,", c.getMinLines()));
+        Optional.ofNullable(c.getMaxLines()).ifPresent(maxLines -> ops.append(String.format("maxLines: %d,", maxLines)));
+        Optional.ofNullable(c.getMinLines()).ifPresent(maxLines -> ops.append(String.format("minLines: %d,", maxLines)));
         ops.append(String.format("wrap: %b,", true));
         ops.append(String.format("autoScrollEditorIntoView: %b,", true));
         ops.append(String.format("mode: 'ace/mode/%s',", c.getMode()));
