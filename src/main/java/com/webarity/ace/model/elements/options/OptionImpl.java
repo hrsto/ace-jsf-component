@@ -1,7 +1,11 @@
 package com.webarity.ace.model.elements.options;
 
-public class OptionImpl<T> implements Option<T> {
+import java.io.Serializable;
 
+public class OptionImpl<T> implements Option<T>, Serializable {
+
+    private static final long serialVersionUID = 1L;
+    
     String name;
     T value;
 

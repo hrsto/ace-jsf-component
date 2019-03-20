@@ -24,7 +24,6 @@ public class AceUI extends UIInput implements ClientBehaviorHolder {
         maxLines, minLines, mode, keybinding, theme, worker;
     }
 
-    
     public Integer getMaxLines() { return (Integer)getStateHelper().get(Props.maxLines); }
     
     public void setMaxLines(Integer maxLines) {

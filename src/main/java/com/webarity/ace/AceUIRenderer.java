@@ -15,6 +15,7 @@ import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
 import javax.json.bind.JsonbConfig;
 
+import com.webarity.ace.model.AceModel;
 import com.webarity.ace.model.json.AceModelDeserializer;
 import com.webarity.ace.model.json.AceModelSerializer;
 
@@ -29,6 +30,7 @@ public class AceUIRenderer extends Renderer {
         .withSerializers(new AceModelSerializer())
     );
 
+    @SuppressWarnings({"unchecked"})
     @Override
     public void encodeEnd(FacesContext ctx, UIComponent comp) throws IOException {
         if (ctx == null || comp == null) throw new NullPointerException();
@@ -52,14 +54,23 @@ public class AceUIRenderer extends Renderer {
                 ClientBehaviorContext cbCtx = ClientBehaviorContext.createClientBehaviorContext(ctx, c, entry.getKey(), c.getClientId(), null);
                 entry.getValue().stream().forEach(cb -> {
                     try {
-                            resp.writeAttribute(String.format("on%s", entry.getKey()), cb.getScript(cbCtx), null);
+                        resp.writeAttribute(String.format("on%s", entry.getKey()), cb.getScript(cbCtx), null);
                     } catch (IOException ex) {
                         ex.printStackTrace();
                     }
                 });
             });
+            
         if (c.getValue() != null) {
-            resp.writeAttribute("value", c.getValue(), "value");
+            if (AceModel.class.isInstance(c.getValue())) {
+                if (c.getConverter() != null) {
+                    resp.writeAttribute("value",  c.getConverter().getAsString(ctx, c, c.getValue()), "value");
+                } else {
+                    resp.writeAttribute("value", j.toJson(c.getValue()), "value");
+                }
+            } else {
+                resp.writeAttribute("value", c.getValue(), "value");
+            }
         }
         resp.endElement("input");
         
