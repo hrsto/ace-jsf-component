@@ -74,7 +74,7 @@ public class AceUIRenderer extends Renderer {
         }
         resp.endElement("input");
         
-        renderScriptInitializer(resp, c, editorId);
+        renderScriptInitializer(ctx, resp, c, editorId);
     }
 
     @Override
@@ -98,13 +98,15 @@ public class AceUIRenderer extends Renderer {
      * @param c The Ace custom component
      * @throws IOException
      */
-    private void renderScriptInitializer(ResponseWriter resp, AceUI c, String editorId) throws IOException {
+    private void renderScriptInitializer(FacesContext ctx, ResponseWriter resp, AceUI c, String editorId) throws IOException {
         resp.startElement("script", c);
+
+        String ctxPath = ctx.getExternalContext().getApplicationContextPath();
         
-        resp.write(String.format("ace.config.setModuleUrl('ace/theme/%s', '/javax.faces.resource/theme-%s.js.xhtml?ln=ace');",  c.getTheme(), c.getTheme()));
-        resp.write(String.format("ace.config.setModuleUrl('ace/keybindings/%s', '/javax.faces.resource/keybinding-%s.js.xhtml?ln=ace');",  c.getKeybinding(), c.getKeybinding()));
-        resp.write(String.format("ace.config.setModuleUrl('ace/mode/%s', '/javax.faces.resource/mode-%s.js.xhtml?ln=ace');",  c.getMode(), c.getMode()));
-        resp.write(String.format("ace.config.setModuleUrl('ace/mode/%s_worker', '/javax.faces.resource/worker-%s.js.xhtml?ln=ace');",  c.getMode(), c.getMode()));
+        resp.write(String.format("ace.config.setModuleUrl('ace/theme/%s', '%s/javax.faces.resource/theme-%s.js.xhtml?ln=ace');", c.getTheme(), ctxPath, c.getTheme()));
+        resp.write(String.format("ace.config.setModuleUrl('ace/keybindings/%s', '%s/javax.faces.resource/keybinding-%s.js.xhtml?ln=ace');", c.getKeybinding(), ctxPath, c.getKeybinding()));
+        resp.write(String.format("ace.config.setModuleUrl('ace/mode/%s', '%s/javax.faces.resource/mode-%s.js.xhtml?ln=ace');", c.getMode(), ctxPath,  c.getMode()));
+        resp.write(String.format("ace.config.setModuleUrl('ace/mode/%s_worker', '%s/javax.faces.resource/worker-%s.js.xhtml?ln=ace');", c.getMode(), ctxPath, c.getMode()));
 
         StringBuilder ops = new StringBuilder();
         ops.append("{");
