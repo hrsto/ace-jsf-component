@@ -80,7 +80,7 @@ AceModel aceModel = j.fromJson(jsonVal, AceModel.class);
 
 ## Prerequisites:
 * Java EE8
-* JDK >= 10
+* JDK >= 11
 * Maven >= 3.5.x
 
 ## Running
