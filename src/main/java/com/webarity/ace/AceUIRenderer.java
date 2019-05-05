@@ -117,7 +117,15 @@ public class AceUIRenderer extends Renderer {
         ops.append(String.format("mode: 'ace/mode/%s',", c.getMode()));
         ops.append("}");
 
-        resp.write(String.format("new WebarityAceJS('%s', '%s', 'ace/theme/%s', 'ace/keybindings/%s', %b, %s)", editorId, c.getClientId(), c.getTheme(), c.getKeybinding(), c.getValue() != null, ops));
+        resp.write(String.format("new WebarityAceJS('%s', '%s', 'ace/theme/%s', 'ace/keybindings/%s', %b, %s, %s)", 
+            editorId, 
+            c.getClientId(), 
+            c.getTheme(), 
+            c.getKeybinding(), 
+            c.getValue() != null, 
+            ops, 
+            c.getChangeListenerPassthrough()
+        ));
 
         resp.endElement("script");
     }

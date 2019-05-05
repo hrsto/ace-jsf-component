@@ -21,7 +21,7 @@ public class AceUI extends UIInput implements ClientBehaviorHolder {
     private static final List<String> SUPPORTED_EVENTS = Arrays.asList("change");
 
     public static enum Props {
-        maxLines, minLines, mode, keybinding, theme, worker;
+        maxLines, minLines, mode, keybinding, theme, worker, changeListenerPassthrough;
     }
 
     public Integer getMaxLines() { return (Integer)getStateHelper().get(Props.maxLines); }
@@ -29,6 +29,13 @@ public class AceUI extends UIInput implements ClientBehaviorHolder {
     public void setMaxLines(Integer maxLines) {
         getStateHelper().put(Props.maxLines, maxLines);
     }
+
+    public String getChangeListenerPassthrough() { return (String)getStateHelper().get(Props.changeListenerPassthrough); }
+    
+    public void setChangeListenerPassthrough(String changeListenerPassthrough) {
+        getStateHelper().put(Props.changeListenerPassthrough, changeListenerPassthrough);
+    }
+    
     public Integer getMinLines() { return (Integer)getStateHelper().get(Props.minLines); }
     public void setMinLines(Integer minLines) {
         getStateHelper().put(Props.minLines, minLines);

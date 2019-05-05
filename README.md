@@ -2,20 +2,21 @@
 
 JSF component that enables usage of [Ace](https://ace.c9.io/) v1.4.2 editor for JSF applications.
 
-### Features:
+## Features
+
 * out of the box support for 162 modes
 * out of the box support for 38 modes
 * key bindings for emacs and vim
 * persists Ace session to JSF backing bean:
-    * code folds
-    * scroll
-    * set options
+  * code folds
+  * scroll
+  * set options
 * supports `<f:ajax/>`
 
-### Usage:
+## Usage
 
 In your facelets page import the namespace `https://www.webarity.com/custom-comps/aceui`. For ex:
- 
+
 ```xml
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="#{siteLocales.getCurrentLocale().getLanguage()}" xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h5a="http://xmlns.jcp.org/jsf/passthrough" xmlns:h5e="http://xmlns.jcp.org/jsf"
@@ -23,6 +24,7 @@ xmlns:ccs="https://www.webarity.com/custom-comps/aceui">
 ...
 </html>
 ```
+
 Above we use the `css` namespace, but that can be arbitrary. Now add the component:
 
 ```xml
@@ -32,6 +34,7 @@ Above we use the `css` namespace, but that can be arbitrary. Now add the compone
     </ccs:AceUI>
 </h:form>
 ```
+
 There is support for ajax, but the tag is purely optional. The component essentially behaves like `UIInput` so it must be put inside a `h:form` element.
 
 If using ajax, component will automatically synch with the backing bean 1.5 seconds after last detected input (Ace `change` event). Component will also monitor `changeScrollTop`
@@ -41,14 +44,17 @@ Component comes with a custom type `com.webarity.ace.model.AceModel`. The backin
 
 **NOTE:** the field of your backing bean can be String. It will receive a JSON value of `AceModel`. Look below for Serialization/deserialization - which can be integrated with your own converter.
 
-### Serialization:
+## Serialization
+
 Provided are JSON serializer/deserializer:
+
 * `com.webarity.ace.model.json.AceModelDeserializer`
 * `com.webarity.ace.model.json.AceModelSerializer`
 
 Both of them implement `javax.json.bind.serializer.JsonbSerializer<AceModel>`.
 
 Can be used as follows:
+
 ```java
 static final Jsonb j = JsonbBuilder.create(new JsonbConfig()
     .withDeserializers(new AceModelDeserializer())
@@ -58,7 +64,8 @@ String jsonVal = j.toJson(aceModel);
 AceModel aceModel = j.fromJson(jsonVal, AceModel.class);
 ```
 
-### Attributes:
+## Attributes
+
 * `mode`, optional, defaults to `plain_text`. Provided is a `${AceModes}` of type `java.util.HashMap<String, String>` whose keys is a `java.util.Set` of all available modes. A `mode` can be:
 
 >`abap`, `abc`, `actionscript`, `ada`, `apache_conf`, `apex`, `applescript`, `asciidoc`, `asl`, `assembly_x86`, `autohotkey`, `batchfile`, `bro`, `c_cpp`, `c9search`, `cirru`, `clojure`, `cobol`, `coffee`, `coldfusion`, `csharp`, `csound_document`, `csound_orchestra`, `csound_score`, `csp`, `css`, `curly`, `d`, `dart`, `diff`, `django`, `dockerfile`, `dot`, `drools`, `edifact`, `eiffel`, `ejs`, `elixir`, `elm`, `erlang`, `forth`, `fortran`, `fsharp`, `fsl`, `ftl`, `gcode`, `gherkin`, `gitignore`, `glsl`, `gobstones`, `golang`, `graphqlschema`, `groovy`, `haml`, `handlebars`, `haskell`, `haskell_cabal`, `haxe`, `hjson`, `html`, `html_elixir`, `html_ruby`, `ini`, `io`, `jack`, `jade`, `java`, `javascript`, `json`, `jsoniq`, `jsp`, `jssm`, `jsx`, `julia`, `kotlin`, `latex`, `less`, `liquid`, `lisp`, `livescript`, `logiql`, `logtalk`, `lsl`, `lua`, `luapage`, `lucene`, `makefile`, `markdown`, `mask`, `matlab`, `maze`, `mel`, `mixal`, `mushcode`, `mysql`, `nix`, `nsis`, `objectivec`, `ocaml`, `pascal`, `perl`, `perl6`, `pgsql`, `php`, `php_laravel_blade`, `pig`, `plain_text`, `powershell`, `praat`, `prolog`, `properties`, `protobuf`, `puppet`, `python`, `r`, `razor`, `rdoc`, `red`, `redshift`, `rhtml`, `rst`, `ruby`, `rust`, `sass`, `scad`, `scala`, `scheme`, `scss`, `sh`, `sjs`, `slim`, `smarty`, `snippets`, `soy_template`, `space`, `sparql`, `sql`, `sqlserver`, `stylus`, `svg`, `swift`, `tcl`, `terraform`, `tex`, `text`, `textile`, `toml`, `tsx`, `turtle`, `twig`, `typescript`, `vala`, `vbscript`, `velocity`, `verilog`, `vhdl`, `visualforce`, `wollok`, `xml`, `xquery`, `yaml`
@@ -75,22 +82,26 @@ AceModel aceModel = j.fromJson(jsonVal, AceModel.class);
 
 * `minLines`, `java.lang.Integer`, Ace editor will at least span that many lines.
 
+* `changeListenerPassthrough`, `java.lang.String`, a JavaScript function that will be attached to Ace change event. Will receive two arguments - the Ace change event and the id of the input element.
 
 ---
 
-## Prerequisites:
+## Prerequisites
+
 * Java EE8
 * JDK >= 11
 * Maven >= 3.5.x
 
 ## Running
+
 * `mvn clean package`
 * copy `jar` file to `WEB-INF/lib/` for `.war` deployments
 * copy `jar` file to `/lib/` for `.ear` deployments
 
 ## Tested on
+
 * WildFly 15 with jre v10.0.2
 
 ---
 
-https://www.webarity.com
+<https://www.webarity.com>

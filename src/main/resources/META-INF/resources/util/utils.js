@@ -1,6 +1,8 @@
-function WebarityAceJS(editorId, inputElementId, theme, kbdHandler, initSession, opts) {
+function WebarityAceJS(editorId, inputElementId, theme, kbdHandler, initSession, opts, changeListenerPassthrough) {
     this.inputElementId = inputElementId;
     this.timeoutId;
+
+    this.changeListenerPassthrough = changeListenerPassthrough;
 
     this.editor = ace.edit(editorId, opts);
 
@@ -19,6 +21,7 @@ WebarityAceJS.prototype = {
 
     updater: function() {
         this.editor.getSession().on('change', evt => this.proc(this.inputElementId, 1500));
+        if (this.changeListenerPassthrough) this.editor.getSession().on('change', evt => this.changeListenerPassthrough(evt, this.inputElementId));
         this.editor.getSession().on('changeScrollTop', scrollTop => this.proc(this.inputElementId, 2500));
         this.editor.getSession().on('changeScrollLeft', scrollLeft => this.proc(this.inputElementId, 2500));
         this.editor.getSession().on('changeFold', () => this.proc(this.inputElementId, 2500));
